@@ -41,6 +41,8 @@ pub struct Config {
     pub externally_accessible_url: String,
     #[serde(default)]
     pub cache: Cache,
+    #[serde(default)]
+    pub allow_invalid_token: bool,
 }
 
 #[derive(Deserialize, Clone)]

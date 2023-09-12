@@ -46,7 +46,9 @@ Create a file `config.json` and fill in these fields as you wish:
     "stickers": false,
     "users": false,
     "voice_states": false
-  }
+  },
+  // disconnect client if its token does not match the one in this config file
+  "allow_invalid_token": false
 }
 ```
 

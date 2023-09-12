@@ -218,7 +218,9 @@ pub async fn handle_client<S: 'static + AsyncRead + AsyncWrite + Unpin + Send>(
         #[cfg(not(feature = "simd-json"))]
         let payload = unsafe { String::from_utf8_unchecked(data) };
 
-        let Some(deserializer) = GatewayEvent::from_json(&payload) else { continue };
+        let Some(deserializer) = GatewayEvent::from_json(&payload) else {
+            continue;
+        };
 
         match deserializer.op() {
             1 => {
@@ -254,7 +256,9 @@ pub async fn handle_client<S: 'static + AsyncRead + AsyncWrite + Unpin + Send>(
                 }
 
                 // Discord tokens may be prefixed by 'Bot ' in IDENTIFY
-                if identify.d.token.split_whitespace().last() != Some(&CONFIG.token) {
+                if !CONFIG.allow_invalid_token
+                    && identify.d.token.split_whitespace().last() != Some(&CONFIG.token)
+                {
                     warn!("[{addr}] Token from client mismatched, disconnecting");
                     break;
                 }
@@ -301,7 +305,9 @@ pub async fn handle_client<S: 'static + AsyncRead + AsyncWrite + Unpin + Send>(
                 };
 
                 // Discord tokens may be prefixed by 'Bot ' in RESUME
-                if resume.d.token.split_whitespace().last() != Some(&CONFIG.token) {
+                if !CONFIG.allow_invalid_token
+                    && resume.d.token.split_whitespace().last() != Some(&CONFIG.token)
+                {
                     warn!("[{addr}] Token from client mismatched, disconnecting");
                     break;
                 }
