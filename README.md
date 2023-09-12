@@ -60,16 +60,15 @@ Take special care when setting cache flags, only enable what you actually need. 
 
 ## Running
 
-Compiling this from source isn't the most fun, you'll need a nightly Rust compiler with the rust-src component installed. Then run `cargo build --release --target=MY_RUSTC_TARGET`, where `MY_RUSTC_TARGET` is probably `x86_64-unknown-linux-gnu`.
+~~Compiling this from source isn't the most fun, you'll need a nightly Rust compiler with the rust-src component installed. Then run `cargo build --release --target=MY_RUSTC_TARGET`, where `MY_RUSTC_TARGET` is probably `x86_64-unknown-linux-gnu`.~~
 
-Instead, I recommend running the Docker images that are prebuilt by CI.
+You can just run `cargo build`. No need for nightly or any weird flags 😁. If you want optimization add `--release`. If you want extra optimization for the current cpu set `RUSTFLAGS="-Ctarget-cpu=native"`.
 
-The Docker images are tagged based on the CPU microarchitecture that they are built and tuned for, currently either `znver3` (Zen 3), `znver2` (Zen 2), `haswell`, `sandybridge` or `x86-64` (the only target with SIMD disabled, therefore the most compatible).
-
-To run the image, mount the config file at `/config.json`, for example:
+To run the docker image, mount the config file at `/config.json`, for example:
 
 ```bash
-docker run --rm -it -v /path/to/my/config.json:/config.json docker.io/gelbpunkt/gateway-proxy:haswell
+docker build -t gateway-proxy --build-arg SIMD=1 .
+docker run --rm -it -v /path/to/my/config.json:/config.json gateway-proxy
 ```
 
 ## Connecting

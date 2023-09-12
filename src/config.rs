@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 #[cfg(not(feature = "simd-json"))]
 use serde_json::Error as JsonError;
@@ -12,7 +13,6 @@ use std::{
     fmt::{Display, Formatter, Result as FmtResult},
     fs::read_to_string,
     process::exit,
-    sync::LazyLock,
 };
 
 #[derive(Deserialize)]
@@ -229,7 +229,7 @@ pub fn load(path: &str) -> Result<Config, Error> {
     Ok(config)
 }
 
-pub static CONFIG: LazyLock<Config> = LazyLock::new(|| {
+pub static CONFIG: Lazy<Config> = Lazy::new(|| {
     match load("config.json") {
         Ok(config) => config,
         Err(err) => {
